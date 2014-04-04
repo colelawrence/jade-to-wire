@@ -1,6 +1,3 @@
 *.jade
 *.wire
-lftp
-.jadetowirerc
-.ftpsrc
 node_modules
