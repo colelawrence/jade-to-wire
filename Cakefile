@@ -1,10 +1,20 @@
 jade = require "jade"
 path = require "path"
 fs = require "fs"
+replaceAll = (string, omit, place, prevstring) ->
+	if (prevstring && string is prevstring)
+    return string
+  prevstring = string.replace(omit, place)
+  return replaceAll(prevstring, omit, place, string)
 postWirer = (code) ->
-	code.replace("id=", "name=")
+	code = replaceAll(code, "id=", "name=")
+	code = replaceAll(code, "class=", "style=")
+	return replaceAll(code, "rw_if", "if")
 preWirer = (code) ->
-	code.replace(/@([\w\d_\-]+)(.*?)\(/g, "$2(target=\"$1\"")
+	code = code.replace /\tif/g, "\trw_if"
+	.replace /@([\w\d_\-]+)(\(?)/g, (match, target, openparen) ->
+		"(target=\"#{target}\"" + (if openparen.length then "" else ")")
+	return replaceAll code, "_if", "if"
 genJadeFile = (filename, upload = false) ->
 	jadeCode = fs.readFileSync filename, "utf8"
 	htmlCode = jade.render preWirer(jadeCode), { filename, pretty:true }
@@ -24,5 +34,4 @@ task "watch", "watch to compile jade files", ->
 		return if event isnt "change"
 		return if not filename?
 		return if filename[-4...] isnt "jade"
-		console.log {event, filename}
 		genJadeFile(filename)
