@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 
-var fs, genAll, genJadeFile, jade, path, postWirer, preWirer, replaceAll;
+var fs, genAll, genJadeFile, checkToCompile, timeLog, jade, path, postWirer, preWirer, replaceAll;
 jade = require("jade");
 path = require("path");
 fs = require("fs");
+// When watching scripts, it's useful to log changes with the timestamp.
+timeLog = function (message) {
+  console.log((new Date).toLocaleTimeString() + " - " + message);
+}
 
 replaceAll = function(string, omit, place, prevstring) {
   if (prevstring && string === prevstring) {
@@ -16,6 +20,8 @@ replaceAll = function(string, omit, place, prevstring) {
 postWirer = function(code) {
   code = replaceAll(code, "id=", "name=");
   code = replaceAll(code, "class=", "style=");
+  code = replaceAll(code, "<div", "<panel");
+  code = replaceAll(code, "</div", "</panel");
   return replaceAll(code, "rw_if", "if");
 };
 
@@ -26,11 +32,8 @@ preWirer = function(code) {
   return replaceAll(code, "_if", "if");
 };
 
-genJadeFile = function(filename, upload) {
+genJadeFile = function(filename) {
   var htmlCode, jadeCode, wireFilename;
-  if (upload == null) {
-    upload = false;
-  }
   jadeCode = fs.readFileSync(filename, "utf8");
   htmlCode = jade.render(preWirer(jadeCode), {
     filename: filename,
@@ -38,20 +41,19 @@ genJadeFile = function(filename, upload) {
   });
   wireFilename = filename.slice(0, -4) + "wire";
   fs.writeFile(wireFilename, postWirer(htmlCode), function(err) {
-    console.log("δ " + wireFilename);
+    timeLog("Compiled " + wireFilename);
     if (err) {
       throw err;
     }
   });
 };
 
+checkToCompile = function(filename) {
+  if (filename != null && filename.slice(-4) === "jade") genJadeFile(filename);
+}
 genAll = function() {
-  var filename, _i, _len, _ref;
-  _ref = fs.readdirSync("./");
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    filename = _ref[_i];
-    if (filename.slice(-4) === "jade") genJadeFile(filename);
-  }
+  timeLog("Compiling jade files");
+  fs.readdirSync("./").forEach(checkToCompile);
 };
 
 var srcFW;
@@ -60,6 +62,6 @@ srcFW = fs.watch("./", {
   interval: 500
 });
 srcFW.on("change", function(event, filename) {
-  if (event !== "change" || filename == null || filename.slice(-4) !== "jade") return;
-  genJadeFile(filename);
+  if (event === "change") checkToCompile(filename);
 });
+timeLog("Watching jade files");
