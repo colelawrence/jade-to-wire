@@ -5,11 +5,10 @@ Jade syntax to wire xml compiler
 
 Use node.js to watch changes to `.jade` files to compile into corresponding `.wire` files.
 
-## Install jade-to-wire globally
 
-`npm install -g jade-to-wire`
+After installing globally, you can run the command `jade-to-wire` from any folder to start a file watcher.
 
-
-## Run jade-to-wire from any folder
-
-`jade-to-wire`
+```
+npm install -g jade-to-wire
+jade-to-wire
+```
