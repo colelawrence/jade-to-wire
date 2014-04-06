@@ -27,7 +27,7 @@ postWirer = function(code) {
 
 preWirer = function(code) {
   code = code.replace(/\tif/g, "\trw_if".replace(/@([\w\d_\-]+)(\(?)/g, function(match, target, openparen) {
-    return ("(target=\</footer>" + target + "\</footer>") + (openparen.length ? "" : ")");
+    return ("(target=\"" + target + "\"") + (openparen.length ? "" : ")");
   }));
   return replaceAll(code, "_if", "if");
 };
