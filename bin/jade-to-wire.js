@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var fs, genAll, genJadeFile, checkToCompile, timeLog, jade, path, postWirer, preWirer, replaceAll;
+var fs, genAll, genJadeFile, checkToCompile, timeLog, keywords, jade, path, postWirer, preWirer, replaceAll;
 jade = require("jade");
 path = require("path");
 fs = require("fs");
@@ -8,6 +8,14 @@ fs = require("fs");
 timeLog = function (message) {
   console.log((new Date).toLocaleTimeString() + " - " + message);
 }
+
+keywords = [
+  "if", "else",
+  "each", "for",
+  "case", "when", "default",
+  "include", "mixin",
+  "extends", "block"
+]
 
 replaceAll = function(string, omit, place, prevstring) {
   if (prevstring && string === prevstring) {
@@ -18,18 +26,21 @@ replaceAll = function(string, omit, place, prevstring) {
 };
 
 postWirer = function(code) {
-  code = replaceAll(code, "id=", "name=");
-  code = replaceAll(code, "class=", "style=");
+  code = replaceAll(code, " id=", " name=");
+  code = replaceAll(code, " class=", " style=");
   code = replaceAll(code, "<div", "<panel");
   code = replaceAll(code, "</div", "</panel");
-  return replaceAll(code, "rw_if", "if");
+  return code.replace(/(<|<\/)rw_(\w+)/g, "$1$2");
 };
 
 preWirer = function(code) {
-  code = code.replace(/\tif/g, "\trw_if".replace(/@([\w\d_\-]+)(\(?)/g, function(match, target, openparen) {
+  code = code.replace(/\tif/g, "\trw_if").replace(/@([\w\d_\-]+)(\(?)/g, function(match, target, openparen) {
     return ("(target=\"" + target + "\"") + (openparen.length ? "" : ")");
-  }));
-  return replaceAll(code, "_if", "if");
+  });
+  keywords.forEach(function (E) {
+    code = code.replace(new RegExp("\\b_" + E + "\\b","g"), "rw_" + E);
+  })
+  return code
 };
 
 genJadeFile = function(filename) {
