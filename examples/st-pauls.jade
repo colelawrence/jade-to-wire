@@ -13,8 +13,6 @@ wire
     panel(bottomof="header" height="84%" width="100%" background="CFDDA8")
       web.full#web(url=urls[0][1] alias="WEB")
   actions
-    action#e
-      _if(ls="" eq="eq" rs="")
     each val, index in urls
       action(name="goto#{val[0]}")
         load(url="#{val[1]}" target="WEB")
