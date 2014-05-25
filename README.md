@@ -13,7 +13,7 @@ npm install -g jade-to-wire
 jade-to-wire
 ```
 
-This little compiler can be used with SFTP for Sublime Text to monitor and upload compiled wire files to create a quick-paced workflow.
+I recommend this compiler be used with SFTP for Sublime Text to monitor compiled wire files for uploading to create a quick-paced workflow for making WIRE apps.
 
 ## Pre-preprocessors
 
@@ -23,3 +23,24 @@ Some basics of the post-compiling, are that `id=` is replaced with `name=` to be
 And `class=` is replaced with `style=`
 
 So the tag `panel#bacon.square` is compiled into `<panel name="bacon" style="square"></panel>`
+
+## Jade keywords
+
+Some keywords are shared between WIRE XML and jade like `include` and `if` tags. So if you want to generate a `<if>` tag you use `_if` in jade,
+
+***so:***
+
+```jade
+  - var happy = true
+  if happy
+    _if(lhs="" operator="" rhs="")
+      assign(property="" value="")
+```
+
+***becomes:***
+
+```xml
+  <if lhs="" operator="" rhs="">
+    <assign property="" value=""/>
+  </if>
+```
