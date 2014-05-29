@@ -9,7 +9,7 @@ Use node.js to watch changes to `.jade` files to compile into corresponding `.wi
 After installing globally, you can run the command `jade-to-wire` from any folder to start a file watcher.
 
 ```
-npm install -g jade-to-wire
+sudo npm install -g jade-to-wire
 jade-to-wire
 ```
 
@@ -44,3 +44,11 @@ Some keywords are shared between WIRE XML and jade like `include` and `if` tags.
     <assign property="" value=""/>
   </if>
 ```
+
+## Vars file
+
+If a `vars.cson` or a `vars.json` file is located in the directory where `jade-to-wire` is executed, it will be read in for local variables to be used with each jade conversion.
+
+## Converting wire to jade
+
+To convert past projects into the nifty and fantastic language of jade, just run the command `wire-to-jade` from the directory containing your wire files.
