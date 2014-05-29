@@ -2,19 +2,22 @@
   "name": "jade-to-wire",
   "description": "Use the powers of nodejs and jade to supercharge your WIRE app creation workflow!",
   "author": "Cole R Lawrence<@ZombieHippie>",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "repository": "https://github.com/ZombieHippie/jade-to-wire",
-  "dependencies": {
-    "jade": "1.3.1",
-    "html2jade": "0.7.5"
+  "engines": {
+    "node": ">=0.8.0"
   },
   "directories": {
-    "lib": "./lib"
+    "lib": "./lib/jade-to-wire"
   },
-  "preferGlobal": true,
   "main": "./lib/main.js",
   "bin": {
     "jade-to-wire": "./bin/jade-to-wire",
     "wire-to-jade": "./bin/wire-to-jade"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "jade": "1.3.1",
+    "html2jade": "0.7.5"
   }
 }

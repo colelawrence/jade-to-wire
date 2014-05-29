@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-var path = require('path')
+var path = require("path")
 var fs = require("fs")
-var lib  = path.join(path.dirname(fs.realpathSync(__filename)), '../lib')
-var jadeToWire = require(lib + "/command/wire-to-jade").run()
+var lib  = path.join(path.dirname(fs.realpathSync(__filename)), "../lib")
+
+require(lib + "/jade-to-wire/wire-to-jade").run()
